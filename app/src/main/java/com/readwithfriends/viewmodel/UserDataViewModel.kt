@@ -7,7 +7,7 @@ import com.readwithfriends.model.AuthenticationRepository
 
 class UserDataViewModel : ViewModel() {
 
-    var username: LiveData<String> = AuthenticationRepository.getAuth().transformNotNull {
+    var email: LiveData<String> = AuthenticationRepository.getAuth().transformNotNull {
         it.email
     }
 
