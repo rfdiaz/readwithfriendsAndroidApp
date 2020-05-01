@@ -2,8 +2,11 @@ package com.readwithfriends.ui.home
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.readwithfriends.R
 import com.readwithfriends.extensions.getViewModel
 import com.readwithfriends.extensions.observe
@@ -45,7 +48,8 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun showUsername(username: String) {
-        name.text = "Hi $username!"
+        list.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        list.adapter = ListAdapter(listOf(username, "Jorge", "Rodrigo", "Test"))
     }
 
     private fun handleAuthenticationState(state: AuthenticationState) {
