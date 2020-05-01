@@ -29,6 +29,8 @@ class HomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_home)
         val activity = this@HomeActivity
 
+        //comentario clave
+
         // UserDataViewModel to display user data
         getViewModel(UserDataViewModel::class.java) {
             username.observe(activity) {
