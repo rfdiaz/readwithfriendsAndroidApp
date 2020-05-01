@@ -14,8 +14,8 @@ import com.readwithfriends.model.mapper.toEntity
 
 object AuthenticationRepository {
 
-    fun signUp(email: String, password: String, callback: (success: Boolean, errorCode: Int) -> Unit) {
-        getApi().signUp(UserBackend(email, password)).makeRequest()
+    fun signUp(email: String, password: String,nickName:String,name: String, callback: (success: Boolean, errorCode: Int) -> Unit) {
+        getApi().signUp(UserBackend(email, password,nickName,name)).makeRequest()
             .onSuccess {
                 login(email, password, callback)
             }
@@ -23,7 +23,7 @@ object AuthenticationRepository {
     }
 
     fun login(email: String, password: String, callback: (success: Boolean, errorCode: Int) -> Unit) {
-        getApi().login(UserBackend(email, password)).makeRequest()
+        getApi().login(UserBackend(email, password,null,null)).makeRequest()
             .onSuccess {
                 val authDto = it?.toDto(email)
                 if (authDto != null) {

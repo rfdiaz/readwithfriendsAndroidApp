@@ -12,9 +12,18 @@ class AuthenticationViewModel : ViewModel() {
         else AuthenticationState.NotAuthenticated
     }
 
-    fun signUp(email: String, password: String) {
+    fun signUp(email: String, password: String,nickName: String, name: String) {
         authenticationState.postValue(AuthenticationState.Loading)
-        AuthenticationRepository.signUp(email, password) { success, errorCode ->
+        AuthenticationRepository.signUp(email, password,nickName,name) { success, errorCode ->
+            if (!success) {
+                postSignUpError(errorCode)
+            }
+        }
+    }
+
+    fun login(email: String, password: String) {
+        authenticationState.postValue(AuthenticationState.Loading)
+        AuthenticationRepository.login(email, password) { success, errorCode ->
             if (!success) {
                 postSignUpError(errorCode)
             }

@@ -3,6 +3,7 @@ package com.readwithfriends.ui.signup
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.readwithfriends.R
@@ -15,11 +16,11 @@ import com.readwithfriends.viewmodel.AuthenticationViewModel
 import com.readwithfriends.viewmodel.state.AuthenticationState
 import kotlinx.android.synthetic.main.activity_signup.*
 
-class SignupActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity(){
 
     companion object {
         fun startActivity(context: Context) {
-            context.startActivity(Intent(context, SignupActivity::class.java).apply {
+            context.startActivity(Intent(context, LoginActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // Finishes all previous activities
             })
         }
@@ -27,18 +28,24 @@ class SignupActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_signup)
+        setContentView(R.layout.activity_login)
 
-        val activity = this@SignupActivity
+        val activity = this@LoginActivity
         getViewModel(AuthenticationViewModel::class.java) {
             authenticationState.observe(activity) {
                 handleAuthenticationState(it)
             }
             button.setOnClickListener {
-                this.signUp(email.text.toString(), password.text.toString(),nickName.text.toString(),name.text.toString())
+                this.login(email.text.toString(), password.text.toString())
             }
         }
-    }
+
+        val signInClick = findViewById(R.id.sign_in_link) as? TextView
+        signInClick?.setOnClickListener(){
+            SignupActivity.startActivity(this)
+            finish()
+        }
+}
 
     private fun handleAuthenticationState(state: AuthenticationState) {
         when (state) {

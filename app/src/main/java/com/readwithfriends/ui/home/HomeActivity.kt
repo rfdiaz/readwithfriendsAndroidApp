@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.readwithfriends.R
 import com.readwithfriends.extensions.getViewModel
 import com.readwithfriends.extensions.observe
+import com.readwithfriends.ui.signup.LoginActivity
 import com.readwithfriends.ui.signup.SignupActivity
 import com.readwithfriends.viewmodel.AuthenticationViewModel
 import com.readwithfriends.viewmodel.UserDataViewModel
@@ -31,7 +32,7 @@ class HomeActivity : AppCompatActivity() {
 
         // UserDataViewModel to display user data
         getViewModel(UserDataViewModel::class.java) {
-            username.observe(activity) {
+            email.observe(activity) {
                 showUsername(it)
             }
         }
@@ -47,14 +48,14 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    private fun showUsername(username: String) {
+    private fun showUsername(email: String) {
         list.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        list.adapter = ListAdapter(listOf(username, "Jorge", "Rodrigo", "Test"))
+        list.adapter = ListAdapter(listOf(email))
     }
 
     private fun handleAuthenticationState(state: AuthenticationState) {
         if (!state.isAuthenticated()) {
-            SignupActivity.startActivity(this)
+            LoginActivity.startActivity(this)
             finish()
         }
     }

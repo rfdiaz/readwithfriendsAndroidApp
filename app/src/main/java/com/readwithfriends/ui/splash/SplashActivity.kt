@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.readwithfriends.extensions.getViewModel
 import com.readwithfriends.extensions.observe
 import com.readwithfriends.ui.home.HomeActivity
-import com.readwithfriends.ui.signup.SignupActivity
+import com.readwithfriends.ui.signup.LoginActivity
 import com.readwithfriends.viewmodel.AuthenticationViewModel
 
 class SplashActivity : AppCompatActivity() {
@@ -19,7 +19,7 @@ class SplashActivity : AppCompatActivity() {
                 if (state.isAuthenticated()) {
                     HomeActivity.startActivity(activity)
                 } else {
-                    SignupActivity.startActivity(activity)
+                    LoginActivity.startActivity(activity)
                 }
                 finish()
             }
