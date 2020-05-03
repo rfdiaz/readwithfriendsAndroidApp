@@ -3,6 +3,7 @@ package com.readwithfriends.viewmodel
 import androidx.lifecycle.ViewModel
 import com.readwithfriends.extensions.transform
 import com.readwithfriends.model.AuthenticationRepository
+import com.readwithfriends.model.api.model.ErrorBackend
 import com.readwithfriends.viewmodel.state.AuthenticationState
 
 class AuthenticationViewModel : ViewModel() {
@@ -14,29 +15,24 @@ class AuthenticationViewModel : ViewModel() {
 
     fun signUp(email: String, password: String,nickName: String, name: String) {
         authenticationState.postValue(AuthenticationState.Loading)
-        AuthenticationRepository.signUp(email, password,nickName,name) { success, errorCode ->
+        AuthenticationRepository.signUp(email, password,nickName,name) { success, errorBackend ->
             if (!success) {
-                postSignUpError(errorCode)
+                postSignUpError(errorBackend)
             }
         }
     }
 
     fun login(email: String, password: String) {
         authenticationState.postValue(AuthenticationState.Loading)
-        AuthenticationRepository.login(email, password) { success, errorCode ->
+        AuthenticationRepository.login(email, password) { success, errorBackend ->
             if (!success) {
-                postSignUpError(errorCode)
+                postSignUpError(errorBackend)
             }
         }
     }
 
-    private fun postSignUpError(errorCode: Int) {
-        authenticationState.postValue(
-            AuthenticationState.AuthenticatingError(
-                when (errorCode) {
-                    409 -> "The username already exists, try a different one"
-                    else -> "Something went wrong, please try again later"
-                }))
+    private fun postSignUpError(errorBackend: ErrorBackend) {
+        authenticationState.postValue(AuthenticationState.AuthenticatingError(errorBackend.errorMessage))
     }
 
     fun signOut() {

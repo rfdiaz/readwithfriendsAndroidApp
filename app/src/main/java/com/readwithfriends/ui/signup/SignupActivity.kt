@@ -15,7 +15,7 @@ import com.readwithfriends.viewmodel.AuthenticationViewModel
 import com.readwithfriends.viewmodel.state.AuthenticationState
 import kotlinx.android.synthetic.main.activity_signup.*
 
-class SignupActivity : AppCompatActivity() {
+class SignupActivity : CommonLoginSignUpActivity() {
 
     companion object {
         fun startActivity(context: Context) {
@@ -38,28 +38,5 @@ class SignupActivity : AppCompatActivity() {
                 this.signUp(email.text.toString(), password.text.toString(),nickName.text.toString(),name.text.toString())
             }
         }
-    }
-
-    private fun handleAuthenticationState(state: AuthenticationState) {
-        when (state) {
-            is AuthenticationState.Loading -> showLoading()
-            is AuthenticationState.Authenticated -> showSuccess()
-            is AuthenticationState.AuthenticatingError -> showError(state)
-        }
-    }
-
-    private fun showLoading() {
-        loading.visible()
-    }
-
-    private fun showSuccess() {
-        loading.gone()
-        HomeActivity.startActivity(this)
-        finish()
-    }
-
-    private fun showError(state: AuthenticationState.AuthenticatingError) {
-        loading.gone()
-        Toast.makeText(this, state.message, Toast.LENGTH_SHORT).show()
     }
 }
