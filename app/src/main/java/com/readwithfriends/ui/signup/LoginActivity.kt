@@ -3,7 +3,6 @@ package com.readwithfriends.ui.signup
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.readwithfriends.R
@@ -14,9 +13,13 @@ import com.readwithfriends.extensions.visible
 import com.readwithfriends.ui.home.HomeActivity
 import com.readwithfriends.viewmodel.AuthenticationViewModel
 import com.readwithfriends.viewmodel.state.AuthenticationState
-import kotlinx.android.synthetic.main.activity_signup.*
+import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_signup.button
+import kotlinx.android.synthetic.main.activity_signup.email
+import kotlinx.android.synthetic.main.activity_signup.loading
+import kotlinx.android.synthetic.main.activity_signup.password
 
-class LoginActivity : AppCompatActivity(){
+class LoginActivity : CommonLoginSignUpActivity() {
 
     companion object {
         fun startActivity(context: Context) {
@@ -40,33 +43,10 @@ class LoginActivity : AppCompatActivity(){
             }
         }
 
-        val signInClick = findViewById(R.id.sign_in_link) as? TextView
-        signInClick?.setOnClickListener(){
+
+        signInLink.setOnClickListener() {
             SignupActivity.startActivity(this)
             finish()
         }
-}
-
-    private fun handleAuthenticationState(state: AuthenticationState) {
-        when (state) {
-            is AuthenticationState.Loading -> showLoading()
-            is AuthenticationState.Authenticated -> showSuccess()
-            is AuthenticationState.AuthenticatingError -> showError(state)
-        }
-    }
-
-    private fun showLoading() {
-        loading.visible()
-    }
-
-    private fun showSuccess() {
-        loading.gone()
-        HomeActivity.startActivity(this)
-        finish()
-    }
-
-    private fun showError(state: AuthenticationState.AuthenticatingError) {
-        loading.gone()
-        Toast.makeText(this, state.message, Toast.LENGTH_SHORT).show()
     }
 }

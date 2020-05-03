@@ -1,12 +1,13 @@
 package com.readwithfriends.model
 
 import androidx.lifecycle.LiveData
-import com.readwithfriends.extensions.DEFAULT_ERROR_CODE
+import com.readwithfriends.extensions.DEFAULT_ERROR_BACKEND
 import com.readwithfriends.extensions.dbTask
 import com.readwithfriends.extensions.makeRequest
 import com.readwithfriends.extensions.transform
 import com.readwithfriends.getApi
 import com.readwithfriends.getDatabase
+import com.readwithfriends.model.api.model.ErrorBackend
 import com.readwithfriends.model.api.model.UserBackend
 import com.readwithfriends.model.dto.AuthDto
 import com.readwithfriends.model.mapper.toDto
@@ -14,24 +15,24 @@ import com.readwithfriends.model.mapper.toEntity
 
 object AuthenticationRepository {
 
-    fun signUp(email: String, password: String,nickName:String,name: String, callback: (success: Boolean, errorCode: Int) -> Unit) {
+    fun signUp(email: String, password: String,nickName:String,name: String, callback: (success: Boolean, errorBackend: ErrorBackend) -> Unit) {
         getApi().signUp(UserBackend(email, password,nickName,name)).makeRequest()
             .onSuccess {
                 login(email, password, callback)
             }
-            .onFailure { errorCode, _ -> callback(false, errorCode) }
+            .onFailure { errorBackend, _ -> callback(false, errorBackend) }
     }
 
-    fun login(email: String, password: String, callback: (success: Boolean, errorCode: Int) -> Unit) {
+    fun login(email: String, password: String, callback: (success: Boolean, errorBackend: ErrorBackend) -> Unit) {
         getApi().login(UserBackend(email, password,null,null)).makeRequest()
             .onSuccess {
                 val authDto = it?.toDto(email)
                 if (authDto != null) {
                     saveAuth(authDto) {
-                        callback(true, DEFAULT_ERROR_CODE)
+                        callback(true, DEFAULT_ERROR_BACKEND)
                     }
                 } else {
-                    callback(false, DEFAULT_ERROR_CODE)
+                    callback(false, DEFAULT_ERROR_BACKEND)
                 }
             }
             .onFailure { errorCode, _ ->  callback(false, errorCode) }
