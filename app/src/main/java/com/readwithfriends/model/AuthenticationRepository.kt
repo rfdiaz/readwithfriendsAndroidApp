@@ -39,9 +39,9 @@ object AuthenticationRepository {
     }
 
     fun getAuth(): LiveData<AuthDto?> {
-        return getDatabase().authDao().getAuth().transform {
-            it?.toDto()
-        }
+            return getDatabase().authDao().getAuth().transform {
+                it?.toDto()
+            }
     }
 
     fun signOut() {

@@ -25,9 +25,9 @@ class AuthenticationViewModel : ViewModel() {
     fun login(email: String, password: String) {
         authenticationState.postValue(AuthenticationState.Loading)
         AuthenticationRepository.login(email, password) { success, errorBackend ->
-            if (!success) {
-                postSignUpError(errorBackend)
-            }
+                if (!success) {
+                    postSignUpError(errorBackend)
+                }
         }
     }
 

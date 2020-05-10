@@ -1,5 +1,6 @@
 package com.readwithfriends.model.api
 
+import com.readwithfriends.model.AuthenticationRepository
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -27,7 +28,7 @@ object ReadWithFriendApiBuilder {
 
     private val headersInterceptor = Interceptor { chain ->
         val request = chain.request().newBuilder()
-        request.addHeader("Authorization", "Bearer " + "TODO")
+        request.addHeader("Authorization", "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyb2RyaWdvQGdtYWlsLmNvbSIsImlhdCI6MTU4OTEzNDI1MSwiZXhwIjoxNTkwMzQzODUxfQ.kGcPiKfpZ94qSj6JtOL06HWrO-ec8PSsxUT6pQZIA5Y")//AuthenticationRepository.getAuth().value)
         chain.proceed(request.build())
     }
 
