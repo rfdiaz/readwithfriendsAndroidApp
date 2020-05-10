@@ -25,8 +25,8 @@ class LoginActivity : CommonLoginSignUpActivity() {
         fun startActivity(context: Context) {
             context.startActivity(Intent(context, LoginActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // Finishes all previous activities
-            })
-        }
+    })
+}
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
