@@ -1,5 +1,6 @@
 package com.readwithfriends.model.api
 
+import com.readwithfriends.extensions.transformNotNull
 import com.readwithfriends.model.AuthenticationRepository
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -10,7 +11,9 @@ import java.util.concurrent.TimeUnit
 
 object ReadWithFriendApiBuilder {
 
-    const val BASE_URL = "http://readwithfriendsfodemos.herokuapp.com"
+    //const val BASE_URL = "http://readwithfriendsfodemos.herokuapp.com"
+    const val BASE_URL = "http://192.168.0.152:5100"
+
 
     fun build(): ReadWithFriendsApi {
         val builder = OkHttpClient.Builder()
@@ -28,7 +31,8 @@ object ReadWithFriendApiBuilder {
 
     private val headersInterceptor = Interceptor { chain ->
         val request = chain.request().newBuilder()
-        request.addHeader("Authorization", "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyb2RyaWdvQGdtYWlsLmNvbSIsImlhdCI6MTU4OTEzNDI1MSwiZXhwIjoxNTkwMzQzODUxfQ.kGcPiKfpZ94qSj6JtOL06HWrO-ec8PSsxUT6pQZIA5Y")//AuthenticationRepository.getAuth().value)
+        val token = AuthenticationRepository.getAuthToken()
+        request.addHeader("Authorization", "Bearer " + token)
         chain.proceed(request.build())
     }
 

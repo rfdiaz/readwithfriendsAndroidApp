@@ -4,8 +4,8 @@ import androidx.annotation.Keep
 
 @Keep
 class BookBackendResponse (
-    val authors : Array<String>,
-    val categories: Array<String>,
+    val authors : String,
+    val categories: String,
     val id : Integer,
     val title : String,
     val publisher: String,

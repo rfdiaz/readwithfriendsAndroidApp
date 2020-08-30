@@ -8,6 +8,9 @@ import com.readwithfriends.getApi
 import com.readwithfriends.model.api.model.BookBackendRequest
 import com.readwithfriends.model.api.model.BookBackendResponse
 import com.readwithfriends.model.api.model.ErrorBackend
+import com.readwithfriends.model.api.model.SaveBookBackendRequest
+import com.readwithfriends.model.dto.BookDto
+import com.readwithfriends.model.mapper.toSaveBookBackendRequest
 
 object BooksRepository {
 
@@ -22,6 +25,16 @@ object BooksRepository {
             }
             .onFailure { errorBackend, _ ->
                 callback(errorBackend)
+            }
+    }
+
+    fun saveBook (book: SaveBookBackendRequest,callback: (successCode: String?,error: ErrorBackend?) -> Unit){
+        getApi().saveBook(book).makeRequest()
+            .onSuccess {
+                callback("Todo bien",null)
+            }
+            .onFailure { errorBackend, _ ->
+                callback(null,errorBackend)
             }
     }
 

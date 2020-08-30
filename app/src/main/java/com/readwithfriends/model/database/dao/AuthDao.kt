@@ -9,6 +9,9 @@ interface AuthDao {
     @Query("SELECT * FROM auth LIMIT 1")
     fun getAuth(): LiveData<Auth?>
 
+    @Query("SELECT * FROM auth LIMIT 1")
+    fun getAuth2(): Auth?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAuth(auth: Auth)
 
