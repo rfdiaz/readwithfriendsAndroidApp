@@ -44,6 +44,12 @@ object AuthenticationRepository {
             }
     }
 
+    //Este metodo se usa cuando quieres recuperar la informacion de la room
+    //directamente sin usar observables.
+    fun getAuthToken(): String? {
+        return getDatabase().authDao().getAuth2()?.token.toString();
+    }
+
     fun signOut() {
         dbTask<Unit>().task {
             getDatabase().authDao().deleteAuth()

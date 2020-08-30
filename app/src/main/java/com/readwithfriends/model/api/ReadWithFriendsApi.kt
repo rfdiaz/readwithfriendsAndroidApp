@@ -1,13 +1,9 @@
 package com.readwithfriends.model.api
 
-import com.readwithfriends.model.api.model.BookBackendRequest
-import com.readwithfriends.model.api.model.BookBackendResponse
-import com.readwithfriends.model.api.model.UserBackend
-import com.readwithfriends.model.api.model.UserTokenBackend
+import androidx.annotation.IntegerRes
+import com.readwithfriends.model.api.model.*
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface ReadWithFriendsApi {
 
@@ -19,5 +15,12 @@ interface ReadWithFriendsApi {
 
     @POST( "books/book/image")
     fun findBookByIsbnImage(@Body data:BookBackendRequest): Call<BookBackendResponse>
+
+    @POST("books")
+    fun saveBook(@Body data:SaveBookBackendRequest) : Call<BookBackendResponse>
+
+    @PUT("users/book/{bookId}")
+    fun addBookToUser(@Path("bookId") bookId:Integer) : Call<BookBackendResponse>
+
 
 }

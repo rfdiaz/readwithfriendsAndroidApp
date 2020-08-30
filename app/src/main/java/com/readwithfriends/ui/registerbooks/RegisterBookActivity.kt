@@ -14,6 +14,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.widget.Button
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -21,19 +22,37 @@ import androidx.core.content.FileProvider
 import com.readwithfriends.R
 import com.readwithfriends.extensions.visible
 import com.readwithfriends.model.CameraRepository
+import id.zelory.compressor.Compressor
+import id.zelory.compressor.constraint.quality
+import id.zelory.compressor.constraint.resolution
 import kotlinx.android.synthetic.main.activity_registerbook.*
+import kotlinx.coroutines.*
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 
-class RegisterBookActivity :AppCompatActivity() {
+class RegisterBookActivity : AppCompatActivity() {
 
     private var currentPhotoPath: String? = null;
-    private  val PERMISSION_REQUEST_CODE: Int = 101
-    private  val REQUEST_IMAGE_CAPTURE = 1
-    private var fileInformation = ""
+    private val PERMISSION_REQUEST_CODE: Int = 101
+    private val REQUEST_IMAGE_CAPTURE = 1
+    private var fileInformation: String? = null
+    private val coroutineExceptionHandler: CoroutineExceptionHandler =
+        CoroutineExceptionHandler { _, throwable ->
+            coroutineScope.launch(Dispatchers.Main) {
+                Toast.makeText(
+                    this@RegisterBookActivity,
+                    "Error en la subrutina",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            GlobalScope.launch { println("Caught $throwable") }
+        }
+    private val coroutineScope =
+        CoroutineScope(Dispatchers.Main + parentJob + coroutineExceptionHandler)
 
     companion object {
         fun startActivity(context: Context) {
@@ -41,6 +60,8 @@ class RegisterBookActivity :AppCompatActivity() {
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // Finishes all previous activities
             })
         }
+
+        private val parentJob = Job()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,22 +70,27 @@ class RegisterBookActivity :AppCompatActivity() {
         val activity = this@RegisterBookActivity
 
         takePhotoOfBook.setOnClickListener() {
-            if (CameraRepository.checkPermission(this)){
+            if (CameraRepository.checkPermission(this)) {
                 takePicture()
             } else CameraRepository.requestPermission(this@RegisterBookActivity)
         }
 
-        retrieveBook.setOnClickListener(){
+        retrieveBook.setOnClickListener() {
             DetailBookActivity.fileInformation = fileInformation
-            val intent = Intent(this@RegisterBookActivity,DetailBookActivity::class.java)
+            val intent = Intent(this@RegisterBookActivity, DetailBookActivity::class.java)
             startActivity(intent)
             finish()
         }
     }
 
-    private fun takePicture(){
+    override fun onDestroy() {
+        super.onDestroy()
+        parentJob.cancel()
+    }
+
+    private fun takePicture() {
         val photoFile = createFile()
-        CameraRepository.takePicture(this,photoFile,this@RegisterBookActivity)
+        CameraRepository.takePicture(this, photoFile, this@RegisterBookActivity)
     }
 
     @Throws(IOException::class)
@@ -111,15 +137,31 @@ class RegisterBookActivity :AppCompatActivity() {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
             val imgFile = File(currentPhotoPath)
             if (imgFile.exists()) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val b = BitmapFactory.decodeByteArray(imgFile.readBytes() , 0, imgFile.readBytes().size)
-                    photoImage.setImageBitmap(Bitmap.createScaledBitmap(b, 250, 250, false));
-                     fileInformation = Base64.getEncoder().encodeToString(imgFile.readBytes())
-                    retrieveBook.visible()
+                val b = BitmapFactory.decodeByteArray(
+                    imgFile.readBytes(),
+                    0,
+                    imgFile.readBytes().size
+                )
+                photoImage.setImageBitmap(Bitmap.createScaledBitmap(b, 250, 250, false));
+                retrieveBook.visible()
+                coroutineScope.launch(Dispatchers.Main) {
+                    fileInformation = compressImageInformation(imgFile)
                     imgFile.delete()
                 }
             }
             Toast.makeText(this, "We did it", Toast.LENGTH_SHORT).show()
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private suspend fun compressImageInformation(imgFile: File): String? =
+        withContext(Dispatchers.IO) {
+            //return@withContext Base64.getEncoder().encodeToString(imgFile.readBytes())
+            return@withContext Base64.getEncoder()
+                .encodeToString(Compressor.compress(this@RegisterBookActivity, imgFile) {
+                    resolution(200, 200)
+                    quality(50)
+                }.readBytes())
+            //return@withContext "algo"
+        }
 }
