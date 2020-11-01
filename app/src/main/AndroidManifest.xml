@@ -42,6 +42,9 @@
         <activity
             android:name=".ui.registerbooks.DetailBookActivity"
             android:label="Read with friends" />
+        <activity
+            android:name=".ui.registerbooks.BooksListActivity"
+            android:label="Read with friends" />
 
 
 

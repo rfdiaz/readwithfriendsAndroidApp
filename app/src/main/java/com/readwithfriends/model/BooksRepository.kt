@@ -5,10 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.readwithfriends.extensions.DEFAULT_ERROR_BACKEND
 import com.readwithfriends.extensions.makeRequest
 import com.readwithfriends.getApi
-import com.readwithfriends.model.api.model.BookBackendRequest
-import com.readwithfriends.model.api.model.BookBackendResponse
-import com.readwithfriends.model.api.model.ErrorBackend
-import com.readwithfriends.model.api.model.SaveBookBackendRequest
+import com.readwithfriends.model.api.model.*
 import com.readwithfriends.model.dto.BookDto
 import com.readwithfriends.model.mapper.toSaveBookBackendRequest
 
@@ -31,11 +28,12 @@ object BooksRepository {
     fun saveBook (book: SaveBookBackendRequest,callback: (successCode: String?,error: ErrorBackend?) -> Unit){
         getApi().saveBook(book).makeRequest()
             .onSuccess {
-                callback("Todo bien",null)
+                bookRecovered.postValue(it)
             }
             .onFailure { errorBackend, _ ->
                 callback(null,errorBackend)
             }
     }
+
 
 }

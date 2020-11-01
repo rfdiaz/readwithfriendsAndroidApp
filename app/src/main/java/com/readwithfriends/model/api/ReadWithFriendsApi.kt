@@ -22,5 +22,11 @@ interface ReadWithFriendsApi {
     @PUT("users/book/{bookId}")
     fun addBookToUser(@Path("bookId") bookId:Integer) : Call<BookBackendResponse>
 
+    @GET("users/books/{userEmail}")
+    fun getUserBooks(@Path("userEmail") userEmail:String?): Call<UserBooksBackendResponse>
+
+    @GET("users")
+    fun getUsers(@Query("email") userEmail: String?): Call<List<UserBackend>>
+
 
 }

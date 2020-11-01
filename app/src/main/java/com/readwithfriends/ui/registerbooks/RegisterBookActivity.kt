@@ -78,8 +78,9 @@ class RegisterBookActivity : AppCompatActivity() {
         retrieveBook.setOnClickListener() {
             DetailBookActivity.fileInformation = fileInformation
             val intent = Intent(this@RegisterBookActivity, DetailBookActivity::class.java)
+            //intent.putExtra("fileInformation",fileInformation)
             startActivity(intent)
-            finish()
+            //finish()
         }
     }
 
@@ -87,6 +88,7 @@ class RegisterBookActivity : AppCompatActivity() {
         super.onDestroy()
         parentJob.cancel()
     }
+
 
     private fun takePicture() {
         val photoFile = createFile()

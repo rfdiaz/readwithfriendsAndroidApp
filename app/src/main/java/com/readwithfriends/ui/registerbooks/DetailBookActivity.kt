@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.readwithfriends.R
 import com.readwithfriends.extensions.getViewModel
+import com.readwithfriends.extensions.invisible
 import com.readwithfriends.extensions.observe
 import com.readwithfriends.extensions.visible
 import com.readwithfriends.model.api.model.BookBackendResponse
@@ -23,11 +24,12 @@ class DetailBookActivity : AppCompatActivity() {
 
     lateinit var bookRecovered: BookDto
 
+
     companion object {
-        var fileInformation: String? = null
         fun startActivity(context: Context) {
             context.startActivity(Intent(context, DetailBookActivity::class.java))
         }
+        var fileInformation: String? = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,15 +40,14 @@ class DetailBookActivity : AppCompatActivity() {
         getViewModel(BookDataViewModel::class.java) {
             bookOperationState.observe(activity) {
                 if (it is BookOperationsState.Located) {
-                    bookRecovered = it.book.toDto(it.book)
-                    //Toast.makeText(activity, it.book.title, Toast.LENGTH_SHORT).show()
+                    bookRecovered = it.book.toDto()
                     bookTitle.visible()
-                    bookTitle.text = bookRecovered.title
+                    bookTitle.text = it.book.title
                     bookAuthor.visible()
-                    bookAuthor.text = bookRecovered.authors
+                    bookAuthor.text = it.book.authors
                     bookIsbn.visible()
-                    bookIsbn.text = bookRecovered.isbn
-                    if (bookRecovered.storedInDB!!) {
+                    bookIsbn.text = it.book.isbn
+                    if (it.book.storedInDB!!) {
                         haveBook.visible()
                     } else {
                         saveBook.visible()
@@ -65,16 +66,27 @@ class DetailBookActivity : AppCompatActivity() {
             //Cuando quiero registrar un libro en la base de datos
             saveBook.setOnClickListener() {
                 var resultSaveBook: String = this.saveBook(bookRecovered)
+                haveBook.visible()
+                saveBook.invisible()
+
                 Toast.makeText(activity, resultSaveBook, Toast.LENGTH_SHORT).show()
             }
 
         }
 
         getViewModel(UserDataViewModel::class.java) {
+            booksOperationState.observe(activity){
+                if(it is BookOperationsState.Duplicated){
+                    Toast.makeText(activity, it.book.errorMessage, Toast.LENGTH_SHORT).show()
+                }else if(it is BookOperationsState.AddedBook){
+                    val intent = Intent(this@DetailBookActivity, BooksListActivity::class.java)
+                    startActivity(intent)
+                    //finish()
+                }
+            }
             //Cuando quiero indicar que tengo el libro que acabo de buscar
             haveBook.setOnClickListener() {
-                var resultAddBook: String = this.addBookToUser(bookRecovered.id!!)
-                Toast.makeText(activity, resultAddBook, Toast.LENGTH_SHORT).show()
+                this.addBookToUser(bookRecovered.id!!)
             }
         }
 

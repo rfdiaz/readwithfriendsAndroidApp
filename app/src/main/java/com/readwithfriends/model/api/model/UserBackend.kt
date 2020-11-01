@@ -7,5 +7,6 @@ class UserBackend (
     var email: String,
     var password: String,
     var nickName: String?,
-    var name: String?
+    var name: String?,
+    var picture: String?
 )

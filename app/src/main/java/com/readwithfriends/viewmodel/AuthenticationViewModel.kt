@@ -13,9 +13,9 @@ class AuthenticationViewModel : ViewModel() {
         else AuthenticationState.NotAuthenticated
     }
 
-    fun signUp(email: String, password: String,nickName: String, name: String) {
+    fun signUp(email: String, password: String,nickName: String, name: String,picture : String) {
         authenticationState.postValue(AuthenticationState.Loading)
-        AuthenticationRepository.signUp(email, password,nickName,name) { success, errorBackend ->
+        AuthenticationRepository.signUp(email, password,nickName,name,picture) { success, errorBackend ->
             if (!success) {
                 postSignUpError(errorBackend)
             }
