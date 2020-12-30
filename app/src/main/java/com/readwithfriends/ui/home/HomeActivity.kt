@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.readwithfriends.R
 import com.readwithfriends.extensions.getViewModel
 import com.readwithfriends.extensions.observe
+import com.readwithfriends.model.AuthenticationRepository
 import com.readwithfriends.model.api.model.BookBackendResponse
 import com.readwithfriends.model.api.model.UserBooksBackendResponse
 import com.readwithfriends.ui.registerbooks.RegisterBookActivity
@@ -21,11 +22,12 @@ import com.readwithfriends.viewmodel.state.AuthenticationState
 import com.readwithfriends.viewmodel.state.BookOperationsState
 import com.readwithfriends.viewmodel.state.UsersOperationsState
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.activity_signup.*
 
 
 class HomeActivity : AppCompatActivity() {
 
-    private lateinit  var booksRecovered : UserBooksBackendResponse
+    private lateinit var booksRecovered: UserBooksBackendResponse
 
     companion object {
         fun startActivity(context: Context) {
@@ -33,10 +35,10 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            setContentView(R.layout.activity_home)
-            val activity = this@HomeActivity
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_home)
+        val activity = this@HomeActivity
 
         //comentario clave
 
@@ -47,16 +49,25 @@ class HomeActivity : AppCompatActivity() {
                 this.getUserBooks(it)
             }
 
-            getUsersOperationState.observe(activity){
-                if(it is UsersOperationsState.Located){
+            getUsersOperationState.observe(activity) {
+                if (it is UsersOperationsState.Located) {
                     var decodedPictureString: ByteArray =
                         Base64.decode(it.users[0].picture, Base64.DEFAULT)
-                    imageView.setImageBitmap( BitmapFactory.decodeByteArray(decodedPictureString, 0, decodedPictureString.size))
+                    imageView.setImageBitmap(
+                        BitmapFactory.decodeByteArray(
+                            decodedPictureString,
+                            0,
+                            decodedPictureString.size
+                        )
+                    )
+                    userNickname.setText(it.users[0].nickName)
+                    username.setText(it.users[0].name)
+                    userEmail.setText(it.users[0].email)
                 }
             }
 
-            booksOperationState.observe(activity){
-                if(it is BookOperationsState.LocatedBooks){
+            booksOperationState.observe(activity) {
+                if (it is BookOperationsState.LocatedBooks) {
                     booksRecovered = it.books
                     showBooksList(booksRecovered.userBooks)
                 }
@@ -71,23 +82,30 @@ class HomeActivity : AppCompatActivity() {
             authenticationState.observe(activity) {
                 handleAuthenticationState(it)
             }
-            signOut.setOnClickListener {
-                signOut()
-            }
         }
 
-        registerBook.setOnClickListener {
-            RegisterBookActivity.startActivity(this)
-            //finish()
+
+        bottom_navigation.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.search_book -> {
+                    RegisterBookActivity.startActivity(this)
+                }
+                R.id.sign_out ->{
+                    AuthenticationRepository.signOut()
+                }
+            }
+            return@setOnNavigationItemSelectedListener true
         }
     }
 
-    private fun showBooksList(booksRecovered: List<BookBackendResponse>) {
-        if(!booksRecovered.isNullOrEmpty()) {
+    private fun showBooksList(booksRecovered: MutableList<BookBackendResponse?>) {
+        if (!booksRecovered.isNullOrEmpty()) {
             var booksFrontImagesUrls: MutableList<String> = mutableListOf()
             for (book in booksRecovered) {
-                if(!book.frontImage.isNullOrEmpty()) {
-                    booksFrontImagesUrls.add(book.frontImage)
+                if (book != null) {
+                    if (!book.frontImage.isNullOrEmpty()) {
+                        booksFrontImagesUrls.add(book.frontImage)
+                    }
                 }
             }
             galleryBooks.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)

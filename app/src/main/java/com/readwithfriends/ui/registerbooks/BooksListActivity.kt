@@ -53,7 +53,7 @@ class BooksListActivity : AppCompatActivity(){
         }
     }
 
-    private fun showBooksList(booksRecovered: List<BookBackendResponse>) {
+    private fun showBooksList(booksRecovered: MutableList<BookBackendResponse?>) {
         books.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         books.adapter = BooksListAdapter(booksRecovered)
     }

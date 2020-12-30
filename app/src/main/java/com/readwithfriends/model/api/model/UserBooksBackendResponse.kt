@@ -5,5 +5,5 @@ import androidx.annotation.Keep
 @Keep
 class UserBooksBackendResponse (
     val _id : String,
-    val userBooks: List<BookBackendResponse>
+    val userBooks: MutableList<BookBackendResponse?>
 )

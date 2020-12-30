@@ -6,9 +6,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.readwithfriends.R
 import com.readwithfriends.model.api.model.BookBackendResponse
+import kotlinx.android.synthetic.main.activity_detailbook.view.*
 import kotlinx.android.synthetic.main.layout_book_list_item.view.*
+import kotlinx.android.synthetic.main.layout_book_list_item.view.bookAuthor
+import kotlinx.android.synthetic.main.layout_book_list_item.view.bookTitle
 
-class BooksListAdapter(private val items: List<BookBackendResponse>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class BooksListAdapter(private val items: MutableList<BookBackendResponse?>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return GenericViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_book_list_item, parent, false))
@@ -16,8 +19,9 @@ class BooksListAdapter(private val items: List<BookBackendResponse>) : RecyclerV
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = items[position]
-        holder.itemView.bookAuthor.text = item.authors
-        holder.itemView.bookTitle.text = item.title
+        holder.itemView.bookAuthor.text = item?.authors
+        holder.itemView.bookTitle.text = item?.title
+        holder.itemView.bookListAdaperIsbn.text = item?.isbn
     }
 
     override fun getItemCount(): Int {

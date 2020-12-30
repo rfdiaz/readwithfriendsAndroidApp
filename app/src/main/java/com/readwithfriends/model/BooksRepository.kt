@@ -11,14 +11,29 @@ import com.readwithfriends.model.mapper.toSaveBookBackendRequest
 
 object BooksRepository {
 
-    var bookRecovered = MutableLiveData<BookBackendResponse>();
+    var booksRecovered = MutableLiveData<MutableList<BookBackendResponse?>>();
 
     //Recibe el isbn en formato base64, es la imagen
     fun findBookByIsbn(isbnFormatBase64: String, callback: (error: ErrorBackend) -> Unit) {
         var bookRequest = BookBackendRequest(isbnFormatBase64)
         getApi().findBookByIsbnImage(bookRequest).makeRequest()
             .onSuccess {
-                bookRecovered.postValue(it)
+                val booksList = mutableListOf<BookBackendResponse?>()
+                booksList.add(it)
+                booksRecovered.postValue(booksList)
+            }
+            .onFailure { errorBackend, _ ->
+                callback(errorBackend)
+            }
+    }
+
+    //Recibe el isbn en formato base64, es la imagen
+    fun findBooks(filter: String, callback: (error: ErrorBackend) -> Unit) {
+        getApi().getBooks(filter).makeRequest()
+            .onSuccess {
+                val booksList = mutableListOf<BookBackendResponse?>()
+                it?.forEach { it->booksList.add(it)}
+                booksRecovered.postValue(booksList)
             }
             .onFailure { errorBackend, _ ->
                 callback(errorBackend)
@@ -28,7 +43,9 @@ object BooksRepository {
     fun saveBook (book: SaveBookBackendRequest,callback: (successCode: String?,error: ErrorBackend?) -> Unit){
         getApi().saveBook(book).makeRequest()
             .onSuccess {
-                bookRecovered.postValue(it)
+                val booksList = mutableListOf<BookBackendResponse?>()
+                booksList.add(it)
+                booksRecovered.postValue(booksList)
             }
             .onFailure { errorBackend, _ ->
                 callback(null,errorBackend)

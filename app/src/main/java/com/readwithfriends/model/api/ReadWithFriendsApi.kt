@@ -28,5 +28,8 @@ interface ReadWithFriendsApi {
     @GET("users")
     fun getUsers(@Query("email") userEmail: String?): Call<List<UserBackend>>
 
+    @GET("books")
+    fun getBooks(@Query("filter") filter: String): Call<List<BookBackendResponse>>
+
 
 }

@@ -46,7 +46,7 @@ class LoginActivity : CommonLoginSignUpActivity() {
 
         signInLink.setOnClickListener() {
             SignupActivity.startActivity(this)
-            finish()
+            //finish()
         }
     }
 }

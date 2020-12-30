@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Read with friends</string>
+    <string name="app_name">Smarty Pants</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -12,5 +12,11 @@
     <string name="action_sign_in">"Signup"</string>
     <string name="prompt_username">Name</string>
     <string name="prompt_nickname">Nickname</string>
-
+    <string name="myBooks">Mis libros</string>
+    <string name= "searchBooks">Buscar Libros</string>
+    <string name= "closeSession">Cerrar sesión</string>
+    <string name="email_label">Email:</string>
+    <string name="username_label">Nombre:</string>
+    <string name="nickname_label">Nick:</string>
+    <string name="search_book_prompt">title,author...</string>
 </resources>

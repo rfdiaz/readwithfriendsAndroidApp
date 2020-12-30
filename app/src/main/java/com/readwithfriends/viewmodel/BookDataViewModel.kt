@@ -14,7 +14,7 @@ import com.readwithfriends.viewmodel.state.BookOperationsState
 
 class BookDataViewModel : ViewModel() {
 
-    var bookOperationState = BooksRepository.bookRecovered.transform {
+    var bookOperationState = BooksRepository.booksRecovered.transform {
         BookOperationsState.Located(it) as BookOperationsState
     }
 
@@ -24,6 +24,13 @@ class BookDataViewModel : ViewModel() {
         BooksRepository.findBookByIsbn(isbnFormatBase64) { errorBackend ->
             //bookOperationState.postValue(BookOperationsState.Located)
             //TODO: Notificar error
+        }
+    }
+
+    fun findBooks(filter : String){
+        bookOperationState.postValue(BookOperationsState.Searching)
+        BooksRepository.findBooks(filter){
+
         }
     }
 
