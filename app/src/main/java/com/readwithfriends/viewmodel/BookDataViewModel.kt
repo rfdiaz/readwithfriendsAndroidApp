@@ -18,6 +18,10 @@ class BookDataViewModel : ViewModel() {
         BookOperationsState.Located(it) as BookOperationsState
     }
 
+    var bookInsertedOperation = BooksRepository.bookInserted.transform {
+        BookOperationsState.InsertedBook(it)
+    }
+
 
     fun findBookByIsbn(isbnFormatBase64: String) {
         bookOperationState.postValue(BookOperationsState.Searching)
@@ -34,13 +38,11 @@ class BookDataViewModel : ViewModel() {
         }
     }
 
-    fun saveBook(bookDto: BookDto): String{
+    fun saveBook(bookDto: BookDto?): String{
         var exitCode : String = ""
-        BooksRepository.saveBook(bookDto.toSaveBookBackendRequest()){successCode,errorBackend ->
-            if(successCode.isNullOrBlank()){
-                exitCode = "error"
-            }else{
-                exitCode = "exito"
+        if (bookDto != null) {
+            BooksRepository.saveBook(bookDto.toSaveBookBackendRequest()){bookInserted,errorBackend ->
+
             }
         }
         return exitCode

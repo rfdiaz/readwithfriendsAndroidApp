@@ -26,9 +26,7 @@ class DetailBookActivity : AppCompatActivity() {
         fun startActivity(context: Context) {
             context.startActivity(Intent(context, DetailBookActivity::class.java))
         }
-
-        var fileInformation: String? = null
-        lateinit var bookRecovered  : BookDto
+        var bookRecovered  : BookDto? = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +34,15 @@ class DetailBookActivity : AppCompatActivity() {
         setContentView(R.layout.activity_detailbook)
 
         val activity = this@DetailBookActivity
+
+        bookTitle.setText(bookRecovered?.title)
+        bookAuthor.setText(bookRecovered?.authors)
+        bookIsbn.setText(bookRecovered?.isbn)
+        if(bookRecovered?.storedInDB!!){
+            haveBook.visible()
+        }else{
+            saveBook.visible()
+        }
 
 
         getViewModel(UserDataViewModel::class.java) {
@@ -50,11 +57,16 @@ class DetailBookActivity : AppCompatActivity() {
             }
             //Cuando quiero indicar que tengo el libro que acabo de buscar
             haveBook.setOnClickListener() {
-                //this.addBookToUser(bookRecovered.id!!)
+                this.addBookToUser(bookRecovered?.id!!)
             }
         }
 
         getViewModel(BookDataViewModel::class.java) {
+            bookInsertedOperation.observe(activity){
+                if(it is BookOperationsState.InsertedBook){
+                    bookRecovered?.id = it.bookInserted?.id
+                }
+            }
             //Cuando quiero registrar un libro en la base de datos
             saveBook.setOnClickListener() {
                 var resultSaveBook: String = this.saveBook(bookRecovered)
